@@ -75,8 +75,8 @@ class MainWindow(tk.Tk):
             messagebox.showinfo(APP_TITLE, SUCCESS_CREATED.format(path=output_path))
 
     def _create_summary(self, start: date, end: date) -> Path | None:
-        weekly_path = self._config_manager.get_path("weekly_path")
-        output_path = summary_file_path(weekly_path, start, end)
+        summary_path = self._config_manager.get_path("summary_path")
+        output_path = summary_file_path(summary_path, start, end)
         if output_path.exists():
             if not messagebox.askyesno(APP_TITLE, CONFIRM_OVERWRITE.format(name=output_path.name)):
                 return None
@@ -84,7 +84,7 @@ class MainWindow(tk.Tk):
         created_path = create_weekly_summary(
             templates_path=self._config_manager.get_path("templates_path"),
             daily_path=self._config_manager.get_path("daily_path"),
-            weekly_path=weekly_path,
+            summary_path=summary_path,
             start=start,
             end=end,
         )

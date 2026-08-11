@@ -16,14 +16,14 @@ END = date(2026, 8, 7)
 
 EXPECTED_MARKDOWN = """---
 type: weekly
-week: 20260805_20260807_weekly
+week: 20260805_20260807_summary
 tags:
   - 週次振り返り
 ---
 
 # 業務日誌まとめ
 
-期間:20260805 ｰ 20260807
+期間:2026年8月5日 ｰ 2026年8月7日
 
 ## うまくいったこと
 
@@ -60,7 +60,7 @@ tags:
 
 
 def test_summary_file_path_開始日と終了日からファイル名を組み立てる(tmp_path: Path) -> None:
-    assert summary_file_path(tmp_path, START, END).name == "20260805_20260807_weekly.md"
+    assert summary_file_path(tmp_path, START, END).name == "20260805_20260807_summary.md"
 
 
 def test_collect_entries_存在する日誌のみ日付順に集める(daily_path: Path) -> None:
@@ -75,48 +75,48 @@ def test_collect_entries_日誌フォルダがない場合はエラー(tmp_path:
 
 
 def test_create_weekly_summary_テンプレート書式で出力する(
-    templates_path: Path, daily_path: Path, weekly_path: Path
+    templates_path: Path, daily_path: Path, summary_path: Path
 ) -> None:
-    output_path = create_weekly_summary(templates_path, daily_path, weekly_path, START, END)
+    output_path = create_weekly_summary(templates_path, daily_path, summary_path, START, END)
 
-    assert output_path == weekly_path / "20260805_20260807_weekly.md"
+    assert output_path == summary_path / "20260805_20260807_summary.md"
     assert output_path.read_text(encoding="utf-8") == EXPECTED_MARKDOWN
 
 
 def test_create_weekly_summary_未知の見出しはテンプレート本文を残す(
-    templates_path: Path, daily_path: Path, weekly_path: Path
+    templates_path: Path, daily_path: Path, summary_path: Path
 ) -> None:
     template_file = templates_path / TEMPLATE_FILENAME
     template_file.write_text(
         template_file.read_text(encoding="utf-8") + "\n## 備考\n記入欄\n", encoding="utf-8"
     )
 
-    output_path = create_weekly_summary(templates_path, daily_path, weekly_path, START, END)
+    output_path = create_weekly_summary(templates_path, daily_path, summary_path, START, END)
 
     assert output_path.read_text(encoding="utf-8").endswith("## 備考\n\n記入欄\n")
 
 
 def test_create_weekly_summary_該当項目がない場合は該当なしと出力する(
-    templates_path: Path, daily_path: Path, weekly_path: Path
+    templates_path: Path, daily_path: Path, summary_path: Path
 ) -> None:
     output_path = create_weekly_summary(
-        templates_path, daily_path, weekly_path, date(2026, 8, 7), date(2026, 8, 7)
+        templates_path, daily_path, summary_path, date(2026, 8, 7), date(2026, 8, 7)
     )
 
     assert f"## うまくいったこと\n\n{NO_ITEMS_TEXT}" in output_path.read_text(encoding="utf-8")
 
 
 def test_create_weekly_summary_期間内に日誌がない場合はエラー(
-    templates_path: Path, daily_path: Path, weekly_path: Path
+    templates_path: Path, daily_path: Path, summary_path: Path
 ) -> None:
     with pytest.raises(WeeklySummaryError):
         create_weekly_summary(
-            templates_path, daily_path, weekly_path, date(2026, 9, 1), date(2026, 9, 2)
+            templates_path, daily_path, summary_path, date(2026, 9, 1), date(2026, 9, 2)
         )
 
 
 def test_create_weekly_summary_テンプレートがない場合はエラー(
-    tmp_path: Path, daily_path: Path, weekly_path: Path
+    tmp_path: Path, daily_path: Path, summary_path: Path
 ) -> None:
     with pytest.raises(WeeklySummaryError):
-        create_weekly_summary(tmp_path / "empty", daily_path, weekly_path, START, END)
+        create_weekly_summary(tmp_path / "empty", daily_path, summary_path, START, END)

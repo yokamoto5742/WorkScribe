@@ -69,7 +69,7 @@ tags:
 
 # 業務日誌まとめ
 
-期間:{開始日(yyyymmdd形式)} ｰ {終了日(yyyymmdd形式)}
+期間:{開始日(yyyy年m月d日形式)} ｰ {終了日(yyyy年m月d日形式)}
 
 ## うまくいったこと
 うまくいったことの記述を日付の若い順番から列挙する。
@@ -105,5 +105,5 @@ def templates_path(tmp_path: Path) -> Path:
 
 
 @pytest.fixture
-def weekly_path(tmp_path: Path) -> Path:
-    return tmp_path / "02_Weekly"
+def summary_path(tmp_path: Path) -> Path:
+    return tmp_path / "11_Summary"

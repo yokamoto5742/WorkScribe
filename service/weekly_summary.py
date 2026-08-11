@@ -7,6 +7,7 @@ from typing import Iterable
 
 from app.constants import (
     DAILY_DATE_FORMAT,
+    DISPLAY_DATE_FORMAT,
     ERROR_DAILY_DIR_NOT_FOUND,
     ERROR_NO_DAILY_FILES,
     ERROR_TEMPLATE_NOT_FOUND,
@@ -31,14 +32,14 @@ class WeeklySummaryError(Exception):
     """まとめ作成を継続できない業務エラー。"""
 
 
-def summary_file_path(weekly_path: Path, start: date, end: date) -> Path:
-    return weekly_path / f"{summary_title(start, end)}.md"
+def summary_file_path(summary_path: Path, start: date, end: date) -> Path:
+    return summary_path / f"{summary_title(start, end)}.md"
 
 
 def summary_title(start: date, end: date) -> str:
     return (
         f"{start.strftime(SUMMARY_DATE_FORMAT)}"
-        f"_{end.strftime(SUMMARY_DATE_FORMAT)}_weekly"
+        f"_{end.strftime(SUMMARY_DATE_FORMAT)}_summary"
     )
 
 
@@ -68,7 +69,7 @@ def build_markdown(template_text: str, entries: list[DailyEntry], start: date, e
 def create_weekly_summary(
     templates_path: Path,
     daily_path: Path,
-    weekly_path: Path,
+    summary_path: Path,
     start: date,
     end: date,
 ) -> Path:
@@ -81,8 +82,8 @@ def create_weekly_summary(
         raise WeeklySummaryError(ERROR_TEMPLATE_NOT_FOUND.format(path=template_file))
 
     markdown = build_markdown(template_file.read_text(encoding="utf-8"), entries, start, end)
-    weekly_path.mkdir(parents=True, exist_ok=True)
-    output_path = summary_file_path(weekly_path, start, end)
+    summary_path.mkdir(parents=True, exist_ok=True)
+    output_path = summary_file_path(summary_path, start, end)
     output_path.write_text(markdown, encoding="utf-8")
     return output_path
 
@@ -90,8 +91,8 @@ def create_weekly_summary(
 def _fill_placeholders(preamble: str, start: date, end: date) -> str:
     return (
         preamble.replace(PLACEHOLDER_TITLE, summary_title(start, end))
-        .replace(PLACEHOLDER_START_DATE, start.strftime(SUMMARY_DATE_FORMAT))
-        .replace(PLACEHOLDER_END_DATE, end.strftime(SUMMARY_DATE_FORMAT))
+        .replace(PLACEHOLDER_START_DATE, start.strftime(DISPLAY_DATE_FORMAT))
+        .replace(PLACEHOLDER_END_DATE, end.strftime(DISPLAY_DATE_FORMAT))
     )
 
 
