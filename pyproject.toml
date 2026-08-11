@@ -3,7 +3,10 @@ name = "workscribe"
 version = "1.0.0"
 requires-python = ">=3.13"
 
-dependencies = []
+dependencies = [
+    "openpyxl",
+    "python-docx",
+]
 
 [dependency-groups]
 dev = [
