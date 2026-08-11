@@ -1,6 +1,7 @@
 build/
 dist/
 logs/
+__pycache__
 .idea/
 
 .env
