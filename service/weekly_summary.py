@@ -58,7 +58,7 @@ def collect_entries(daily_path: Path, start: date, end: date) -> list[DailyEntry
 
 
 def build_markdown(template_text: str, entries: list[DailyEntry], start: date, end: date) -> str:
-    preamble = _fill_placeholders(extract_preamble(template_text), start, end)
+    preamble = fill_placeholders(extract_preamble(template_text), summary_title(start, end), start, end)
     blocks = [preamble.strip()]
     for name, template_body in split_sections(template_text).items():
         body = _build_section_body(name, template_body, entries)
@@ -88,9 +88,9 @@ def create_weekly_summary(
     return output_path
 
 
-def _fill_placeholders(preamble: str, start: date, end: date) -> str:
+def fill_placeholders(text: str, title: str, start: date, end: date) -> str:
     return (
-        preamble.replace(PLACEHOLDER_TITLE, summary_title(start, end))
+        text.replace(PLACEHOLDER_TITLE, title)
         .replace(PLACEHOLDER_START_DATE, start.strftime(DISPLAY_DATE_FORMAT))
         .replace(PLACEHOLDER_END_DATE, end.strftime(DISPLAY_DATE_FORMAT))
     )

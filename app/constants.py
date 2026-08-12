@@ -5,9 +5,11 @@ APP_TITLE = "WorkScribe 業務日誌まとめ"
 LABEL_START_DATE = "開始日"
 LABEL_END_DATE = "終了日"
 BUTTON_CREATE = "まとめを作成"
+BUTTON_CREATE_REVIEW = "振り返りを作成"
 
 CONFIRM_OVERWRITE = "{name} は既に存在します。上書きしますか？"
 SUCCESS_CREATED = "業務日誌まとめを作成しました。\n\n{path}"
+SUCCESS_REVIEW_CREATED = "1週間の振り返りを作成しました。\n\n{path}"
 
 ERROR_INVALID_RANGE = "開始日は終了日より前の日付を指定してください。"
 ERROR_NO_DAILY_FILES = "指定した期間に日誌ファイルがありません。"
@@ -16,6 +18,7 @@ ERROR_DAILY_DIR_NOT_FOUND = "日誌フォルダが見つかりません。\n\n{p
 ERROR_UNEXPECTED = "処理中にエラーが発生しました。\n\n{detail}"
 
 TEMPLATE_FILENAME = "業務日誌まとめテンプレート.md"
+REVIEW_TEMPLATE_FILENAME = "1週間の振り返りテンプレート.md"
 DAILY_DATE_FORMAT = "%Y-%m-%d"
 SUMMARY_DATE_FORMAT = "%Y%m%d"
 DISPLAY_DATE_FORMAT = "%Y年%#m月%#d日"

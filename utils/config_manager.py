@@ -43,6 +43,9 @@ class ConfigManager:
     def get_path(self, key: str) -> Path:
         return Path(self.config.get('Path', key))
 
+    def get_int(self, section: str, key: str, fallback: int) -> int:
+        return self.config.getint(section, key, fallback=fallback)
+
     def _ensure_section(self, section: str) -> None:
         if section not in self.config:
             self.config[section] = {}

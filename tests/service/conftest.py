@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from app.constants import TEMPLATE_FILENAME
+from app.constants import REVIEW_TEMPLATE_FILENAME, TEMPLATE_FILENAME
 
 DAILY_0805 = """---
 type: daily
@@ -86,6 +86,33 @@ tags:
 件数を多い順に一覧表にする。
 """
 
+REVIEW_TEMPLATE = """---
+type: weekly
+week: {{title}}
+tags:
+  - 週次振り返り
+---
+
+# 1週間の振り返り
+
+期間:{開始日(yyyy年m月d日形式)} ｰ {終了日(yyyy年m月d日形式)}
+
+### 優れた仕事は何か
+>自分の強みから生まれた成果を書く
+-
+
+### お粗末な仕事や失敗した仕事は何か
+
+事実：
+原因：
+次のアクション：
+
+### 改善すべきことは何か
+
+対象：{例：予定の詰め込み、調査の拡散、連絡の遅れ、レビュー不足}
+原因：
+"""
+
 
 @pytest.fixture
 def daily_path(tmp_path: Path) -> Path:
@@ -101,9 +128,15 @@ def templates_path(tmp_path: Path) -> Path:
     directory = tmp_path / "00_Templates"
     directory.mkdir()
     (directory / TEMPLATE_FILENAME).write_text(TEMPLATE, encoding="utf-8")
+    (directory / REVIEW_TEMPLATE_FILENAME).write_text(REVIEW_TEMPLATE, encoding="utf-8")
     return directory
 
 
 @pytest.fixture
 def summary_path(tmp_path: Path) -> Path:
     return tmp_path / "11_Summary"
+
+
+@pytest.fixture
+def weekly_path(tmp_path: Path) -> Path:
+    return tmp_path / "02_Weekly"
