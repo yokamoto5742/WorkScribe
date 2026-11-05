@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from app.constants import REVIEW_TEMPLATE_FILENAME, TEMPLATE_FILENAME
+from app.constants import QUARTERLY_TEMPLATE_FILENAME, REVIEW_TEMPLATE_FILENAME, TEMPLATE_FILENAME
 
 DAILY_0805 = """---
 type: daily
@@ -113,6 +113,34 @@ tags:
 原因：
 """
 
+QUARTERLY_TEMPLATE = """---
+type: quarterly
+quarter:
+period_start:
+period_end:
+tags:
+  - 四半期レビュー
+---
+
+# 四半期レビュー
+
+> 使い方：下の2箇所（`date(2026-07-01)` / `date(2026-09-30)`）を対象四半期に書き換えてください。
+
+## 1. 全エントリ一覧
+
+```dataview
+WHERE file.day >= date(2026-07-01) AND file.day <= date(2026-09-30)
+```
+
+## 3. 未回収のまま残った対策
+
+```dataview
+TASK
+WHERE file.day >= date(2026-07-01) AND file.day <= date(2026-09-30)
+WHERE !completed
+```
+"""
+
 
 @pytest.fixture
 def daily_path(tmp_path: Path) -> Path:
@@ -129,6 +157,7 @@ def templates_path(tmp_path: Path) -> Path:
     directory.mkdir()
     (directory / TEMPLATE_FILENAME).write_text(TEMPLATE, encoding="utf-8")
     (directory / REVIEW_TEMPLATE_FILENAME).write_text(REVIEW_TEMPLATE, encoding="utf-8")
+    (directory / QUARTERLY_TEMPLATE_FILENAME).write_text(QUARTERLY_TEMPLATE, encoding="utf-8")
     return directory
 
 
@@ -140,3 +169,8 @@ def summary_path(tmp_path: Path) -> Path:
 @pytest.fixture
 def weekly_path(tmp_path: Path) -> Path:
     return tmp_path / "02_Weekly"
+
+
+@pytest.fixture
+def quarterly_path(tmp_path: Path) -> Path:
+    return tmp_path / "03_Quarterly"

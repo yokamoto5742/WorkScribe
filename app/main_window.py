@@ -12,6 +12,7 @@ from tkcalendar import DateEntry
 from app.constants import (
     APP_TITLE,
     BUTTON_CREATE,
+    BUTTON_CREATE_QUARTERLY,
     BUTTON_CREATE_REVIEW,
     CONFIRM_OVERWRITE,
     ERROR_INVALID_RANGE,
@@ -19,8 +20,10 @@ from app.constants import (
     LABEL_END_DATE,
     LABEL_START_DATE,
     SUCCESS_CREATED,
+    SUCCESS_QUARTERLY_CREATED,
     SUCCESS_REVIEW_CREATED,
 )
+from service.quarterly_review import create_quarterly_review, quarterly_file_path
 from service.weekly_review import create_weekly_review, review_file_path
 from service.weekly_summary import WeeklySummaryError, create_weekly_summary, summary_file_path
 from utils.config_manager import ConfigManager
@@ -28,7 +31,7 @@ from utils.config_manager import ConfigManager
 logger = logging.getLogger(__name__)
 
 DEFAULT_WINDOW_WIDTH = 360
-DEFAULT_WINDOW_HEIGHT = 220
+DEFAULT_WINDOW_HEIGHT = 260
 
 
 class MainWindow(tk.Tk):
@@ -57,6 +60,7 @@ class MainWindow(tk.Tk):
 
         self._add_button(frame, 2, BUTTON_CREATE, self._on_create, top_padding=16)
         self._add_button(frame, 3, BUTTON_CREATE_REVIEW, self._on_create_review, top_padding=8)
+        self._add_button(frame, 4, BUTTON_CREATE_QUARTERLY, self._on_create_quarterly, top_padding=8)
         return start_entry, end_entry
 
     @staticmethod
@@ -78,6 +82,9 @@ class MainWindow(tk.Tk):
 
     def _on_create_review(self) -> None:
         self._create(self._create_review, SUCCESS_REVIEW_CREATED)
+
+    def _on_create_quarterly(self) -> None:
+        self._create(self._create_quarterly, SUCCESS_QUARTERLY_CREATED)
 
     def _create(self, create_file: Callable[[date, date], Path | None], success_message: str) -> None:
         start: date = self._start_entry.get_date()
@@ -126,6 +133,20 @@ class MainWindow(tk.Tk):
             end=end,
         )
         logger.info(f"1週間の振り返りを作成しました: {created_path}")
+        return created_path
+
+    def _create_quarterly(self, start: date, end: date) -> Path | None:
+        quarterly_path = self._config_manager.get_path("quarterly_path")
+        if not self._confirm_overwrite(quarterly_file_path(quarterly_path, start)):
+            return None
+
+        created_path = create_quarterly_review(
+            templates_path=self._config_manager.get_path("templates_path"),
+            quarterly_path=quarterly_path,
+            start=start,
+            end=end,
+        )
+        logger.info(f"四半期レビューを作成しました: {created_path}")
         return created_path
 
     @staticmethod
