@@ -2,24 +2,22 @@
   "permissions": {
     "allow": [
       "Bash(mkdir:*)",
+      "Bash(dir:*)",
+      "Bash(git commit:*)",
       "Bash(python -m pytest tests/ -v)",
       "Bash(python -m pytest --version)",
       "Bash(windows-notify:*)",
       "Bash(python -m pytest tests/ -v --tb=short)",
-      "Bash(py -m pytest tests/ -v --tb=short)",
-      "Bash(py -c \"import pytest; print(pytest.__version__)\")",
       "Bash(claude config --help)",
       "Bash(claude config list)",
       "Bash(powershell:*)",
       "Bash(claude config get hooks)",
-      "Bash(dir:*)",
       "Bash(python -m pytest tests/ -v --tb=short --disable-warnings)",
       "Bash(rm:*)"
     ],
     "deny": [
       "Bash(git reset:*)",
       "Bash(git rebase:*)",
-      "Bash(git commit:*)",
       "Read(.env.*)",
       "Read(id_rsa)",
       "Read(id_ed25519)",
@@ -35,6 +33,7 @@
     "ask": []
   },
   "hooks": {
+    "PostToolUse": [],
     "PermissionRequest": [
       {
         "matcher": "",
