@@ -27,7 +27,6 @@ from utils.config_manager import ConfigManager
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_PERIOD_DAYS = 6
 DEFAULT_WINDOW_WIDTH = 360
 DEFAULT_WINDOW_HEIGHT = 220
 
@@ -50,9 +49,11 @@ class MainWindow(tk.Tk):
         frame.grid(row=0, column=0, sticky=tk.EW)
         frame.columnconfigure(1, weight=1)
 
+        # 前週の月曜日〜土曜日を初期値にする（weekday() は月曜日が 0）
         today = date.today()
-        start_entry = self._add_date_row(frame, 0, LABEL_START_DATE, today - timedelta(days=DEFAULT_PERIOD_DAYS))
-        end_entry = self._add_date_row(frame, 1, LABEL_END_DATE, today)
+        last_monday = today - timedelta(days=today.weekday() + 7)
+        start_entry = self._add_date_row(frame, 0, LABEL_START_DATE, last_monday)
+        end_entry = self._add_date_row(frame, 1, LABEL_END_DATE, last_monday + timedelta(days=5))
 
         self._add_button(frame, 2, BUTTON_CREATE, self._on_create, top_padding=16)
         self._add_button(frame, 3, BUTTON_CREATE_REVIEW, self._on_create_review, top_padding=8)
